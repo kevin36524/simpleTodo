@@ -8,12 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,13 +15,16 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    PersistanceManager sharedPersistanceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPersistanceManager = PersistanceManager.sharedInstance();
+        sharedPersistanceManager.applicationContext = getApplicationContext();
         setContentView(R.layout.activity_main);
         lvItems = (ListView) findViewById(R.id.lvItems);
-        readItems();
+        items = sharedPersistanceManager.readItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
         setupListViewListener();
@@ -37,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
-        writeItems();
+        sharedPersistanceManager.writeItems(items);
         etNewItem.setText("");
     }
 
@@ -47,50 +44,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
-                writeItems();
+                sharedPersistanceManager.writeItems(items);
                 return true;
             }
         });
     }
 
-    private void readItems() {
-        items = new ArrayList<String>();
-        try {
-            FileInputStream fileInputStream = openFileInput("tododb.txt");
-            ObjectInputStream ois = new ObjectInputStream(fileInputStream);
-            items = (ArrayList<String>) ois.readObject();
-            ois.close();
-        } catch (FileNotFoundException e) {
-            return;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            return;
-        }
-    }
-
-    private void writeItems() {
-        FileOutputStream fileOutputStream = null;
-        deleteFile("tododb.txt");
-        try {
-            fileOutputStream = openFileOutput("tododb.txt",MODE_APPEND);
-            ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);
-            oos.writeObject(items);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.flush();
-                    fileOutputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
