@@ -1,5 +1,6 @@
 package com.example.patelkev.simpletodo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     TodoItemAdapter itemsAdapter;
     ListView lvItems;
     PersistanceManager sharedPersistanceManager;
+    private final int REQUEST_CODE = 20;
+    private final int RESULT_OK = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +56,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TodoItem currentItem = items.get(position);
-                currentItem.isDone = !currentItem.isDone;
-                itemsAdapter.notifyDataSetChanged();
-                sharedPersistanceManager.writeItems(items);
-                return;
+                Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
+                i.putExtra("todoItem", currentItem);
+                i.putExtra("itemIndex", position);
+                startActivityForResult(i, REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            TodoItem todoItem = (TodoItem) data.getExtras().getSerializable("todoItem");
+            int itemIndex = data.getExtras().getInt("itemIndex");
+            items.set(itemIndex, todoItem);
+            itemsAdapter.notifyDataSetChanged();
+            sharedPersistanceManager.writeItems(items);
+        }
     }
 
 }

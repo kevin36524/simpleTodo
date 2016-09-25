@@ -2,4 +2,9 @@
     <string name="app_name">SimpleTodo</string>
     <string name="hint_newTodo">New Todo</string>
     <string name="btn_label_addItem">Add Item</string>
+    <string name="title_activity_edit_todo">EditTodoActivity</string>
+    <string name="title_tv_edit_todo">Edit Todo Below</string>
+    <string name="checkbox_done_title">Done</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_save">SAVE</string>
 </resources>
