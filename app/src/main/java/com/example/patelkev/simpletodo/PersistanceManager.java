@@ -28,12 +28,12 @@ public class PersistanceManager {
         return instance;
     }
 
-    public ArrayList<String> readItems() {
-        ArrayList<String> items = new ArrayList<String>();
+    public ArrayList<TodoItem> readItems() {
+        ArrayList<TodoItem> items = new ArrayList<TodoItem>();
         try {
             FileInputStream fileInputStream = applicationContext.openFileInput(fileName);
             ObjectInputStream ois = new ObjectInputStream(fileInputStream);
-            items = (ArrayList<String>) ois.readObject();
+            items = (ArrayList<TodoItem>) ois.readObject();
             ois.close();
         } catch (FileNotFoundException e) {
             return items;
@@ -46,7 +46,7 @@ public class PersistanceManager {
         return items;
     }
 
-    public void writeItems(ArrayList<String> items) {
+    public void writeItems(ArrayList<TodoItem> items) {
         FileOutputStream fileOutputStream = null;
         applicationContext.deleteFile(fileName);
         try {

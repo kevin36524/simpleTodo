@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -12,8 +11,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
+    ArrayList<TodoItem> items;
+    TodoItemAdapter itemsAdapter;
     ListView lvItems;
     PersistanceManager sharedPersistanceManager;
 
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lvItems = (ListView) findViewById(R.id.lvItems);
         items = sharedPersistanceManager.readItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        itemsAdapter = new TodoItemAdapter(this, R.layout.todo_cell, items);
         lvItems.setAdapter(itemsAdapter);
         setupListViewListener();
     }
@@ -33,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     public void onAddItem(View v) {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-        itemsAdapter.add(itemText);
+        TodoItem newTodoItem = new TodoItem(itemText, false);
+        itemsAdapter.add(newTodoItem);
         sharedPersistanceManager.writeItems(items);
         etNewItem.setText("");
     }
@@ -46,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
                 itemsAdapter.notifyDataSetChanged();
                 sharedPersistanceManager.writeItems(items);
                 return true;
+            }
+        });
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TodoItem currentItem = items.get(position);
+                currentItem.isDone = !currentItem.isDone;
+                itemsAdapter.notifyDataSetChanged();
+                sharedPersistanceManager.writeItems(items);
+                return;
             }
         });
     }
