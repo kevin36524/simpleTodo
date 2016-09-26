@@ -10,6 +10,10 @@ import android.widget.EditText;
 
 public class EditTodoActivity extends AppCompatActivity {
 
+    public static final String intent_todo_item = "intent_todo_item";
+    public static final String intent_todo_item_index = "intent_todo_item_index";
+    private final int RESULT_OK = 200;
+
     EditText editText;
     CheckBox checkBox;
     Button saveButton;
@@ -24,8 +28,8 @@ public class EditTodoActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         saveButton = (Button) findViewById(R.id.button);
 
-        todoItem = (TodoItem) getIntent().getSerializableExtra("todoItem");
-        itemIndex = getIntent().getIntExtra("itemIndex", 0);
+        todoItem = (TodoItem) getIntent().getSerializableExtra(intent_todo_item);
+        itemIndex = getIntent().getIntExtra(intent_todo_item_index, 0);
         editText.setText(todoItem.title);
         checkBox.setChecked(todoItem.isDone);
 
@@ -36,10 +40,10 @@ public class EditTodoActivity extends AppCompatActivity {
                 // Pass relevant data back as a result
                 todoItem.title = editText.getText().toString();
                 todoItem.isDone = checkBox.isChecked();
-                data.putExtra("todoItem", todoItem);
-                data.putExtra("itemIndex", itemIndex);
+                data.putExtra(intent_todo_item, todoItem);
+                data.putExtra(intent_todo_item_index, itemIndex);
                 // Activity finished ok, return the data
-                setResult(200, data); // set result code and bundle data for response
+                setResult(RESULT_OK, data); // set result code and bundle data for response
                 finish();
             }
         });

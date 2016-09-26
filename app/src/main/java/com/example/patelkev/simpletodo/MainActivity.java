@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TodoItem currentItem = items.get(position);
                 Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
-                i.putExtra("todoItem", currentItem);
-                i.putExtra("itemIndex", position);
+                i.putExtra(EditTodoActivity.intent_todo_item, currentItem);
+                i.putExtra(EditTodoActivity.intent_todo_item_index, position);
                 startActivityForResult(i, REQUEST_CODE);
             }
         });
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
         // REQUEST_CODE is defined above
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
-            TodoItem todoItem = (TodoItem) data.getExtras().getSerializable("todoItem");
-            int itemIndex = data.getExtras().getInt("itemIndex");
+            TodoItem todoItem = (TodoItem) data.getExtras().getSerializable(EditTodoActivity.intent_todo_item);
+            int itemIndex = data.getExtras().getInt(EditTodoActivity.intent_todo_item_index);
             items.set(itemIndex, todoItem);
             itemsAdapter.notifyDataSetChanged();
             sharedPersistanceManager.writeItems(items);
