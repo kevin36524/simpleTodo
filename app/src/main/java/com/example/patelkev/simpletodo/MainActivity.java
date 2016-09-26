@@ -15,18 +15,17 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<TodoItem> items;
     TodoItemAdapter itemsAdapter;
     ListView lvItems;
-    PersistanceManager sharedPersistanceManager;
+    TodoSQLiteManager sharedTodoSqliteManager;
     private final int REQUEST_CODE = 20;
     private final int RESULT_OK = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPersistanceManager = PersistanceManager.sharedInstance();
-        sharedPersistanceManager.applicationContext = getApplicationContext();
+        sharedTodoSqliteManager = TodoSQLiteManager.sharedInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
         lvItems = (ListView) findViewById(R.id.lvItems);
-        items = sharedPersistanceManager.readItems();
+        items = sharedTodoSqliteManager.getAllTodos();
         itemsAdapter = new TodoItemAdapter(this, R.layout.todo_cell, items);
         lvItems.setAdapter(itemsAdapter);
         setupListViewListener();
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         String itemText = etNewItem.getText().toString();
         TodoItem newTodoItem = new TodoItem(itemText, TodoItem.TodoStatus.PENDING);
         itemsAdapter.add(newTodoItem);
-        sharedPersistanceManager.writeItems(items);
+        sharedTodoSqliteManager.addOrUpdateTodo(newTodoItem);
         etNewItem.setText("");
     }
 
@@ -45,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                TodoItem itemToRemove = items.get(position);
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
-                sharedPersistanceManager.writeItems(items);
+                sharedTodoSqliteManager.deleteTodo(itemToRemove);
                 return true;
             }
         });
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             int itemIndex = data.getExtras().getInt(EditTodoActivity.intent_todo_item_index);
             items.set(itemIndex, todoItem);
             itemsAdapter.notifyDataSetChanged();
-            sharedPersistanceManager.writeItems(items);
+            sharedTodoSqliteManager.addOrUpdateTodo(todoItem);
         }
     }
 
