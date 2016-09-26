@@ -31,6 +31,7 @@ The following **additional** features are implemented:
 ## External Guides used
 * [RayWenderlich Android ListView Tutorial](https://www.raywenderlich.com/124438/android-listview-tutorial)
 * [Stack Overflow for using custom Adapter](http://stackoverflow.com/questions/2265661/how-to-use-arrayadaptermyclass)
+* [Stack Overflow for blocks decendant](http://stackoverflow.com/questions/20697534/trying-to-catch-a-click-on-android-listview-item-androiddescendantfocusability)
 
 ## Video Walkthrough 
 
