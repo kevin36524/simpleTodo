@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public void onAddItem(View v) {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-        TodoItem newTodoItem = new TodoItem(itemText, false);
+        TodoItem newTodoItem = new TodoItem(itemText, TodoItem.TodoStatus.PENDING);
         itemsAdapter.add(newTodoItem);
         sharedPersistanceManager.writeItems(items);
         etNewItem.setText("");

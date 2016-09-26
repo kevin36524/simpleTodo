@@ -31,7 +31,7 @@ public class EditTodoActivity extends AppCompatActivity {
         todoItem = (TodoItem) getIntent().getSerializableExtra(intent_todo_item);
         itemIndex = getIntent().getIntExtra(intent_todo_item_index, 0);
         editText.setText(todoItem.title);
-        checkBox.setChecked(todoItem.isDone);
+        checkBox.setChecked(todoItem.status == TodoItem.TodoStatus.DONE);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +39,7 @@ public class EditTodoActivity extends AppCompatActivity {
                 Intent data = new Intent();
                 // Pass relevant data back as a result
                 todoItem.title = editText.getText().toString();
-                todoItem.isDone = checkBox.isChecked();
+                todoItem.status = checkBox.isChecked() ? TodoItem.TodoStatus.DONE : TodoItem.TodoStatus.PENDING;
                 data.putExtra(intent_todo_item, todoItem);
                 data.putExtra(intent_todo_item_index, itemIndex);
                 // Activity finished ok, return the data

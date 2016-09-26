@@ -46,7 +46,7 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> {
             // do whatever you want with your string and long
             viewHolder.itemView.setText(item.title);
             int paintFlags = viewHolder.itemView.getPaintFlags() & (~ STRIKE_THRU_TEXT_FLAG);
-            if (item.isDone) {
+            if (item.status == TodoItem.TodoStatus.DONE) {
                 paintFlags = paintFlags | Paint.STRIKE_THRU_TEXT_FLAG;
             }
             viewHolder.itemView.setPaintFlags(paintFlags);
