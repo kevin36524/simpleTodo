@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<TodoItem> items;
+    ArrayList<Todo> items;
     TodoItemAdapter itemsAdapter;
     ListView lvItems;
     TodoSQLiteManager sharedTodoSqliteManager;
@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     public void onAddItem(View v) {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-        TodoItem newTodoItem = new TodoItem(itemText, TodoItem.TodoStatus.PENDING);
-        itemsAdapter.add(newTodoItem);
-        sharedTodoSqliteManager.addOrUpdateTodo(newTodoItem);
+        Todo newTodo = new Todo(itemText, Todo.TodoStatus.PENDING);
+        itemsAdapter.add(newTodo);
+        sharedTodoSqliteManager.addOrUpdateTodo(newTodo);
         etNewItem.setText("");
     }
 
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                TodoItem itemToRemove = items.get(position);
+                Todo itemToRemove = items.get(position);
                 items.remove(position);
                 itemsAdapter.notifyDataSetChanged();
                 sharedTodoSqliteManager.deleteTodo(itemToRemove);
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TodoItem currentItem = items.get(position);
+                Todo currentItem = items.get(position);
                 Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
                 i.putExtra(EditTodoActivity.intent_todo_item, currentItem);
                 i.putExtra(EditTodoActivity.intent_todo_item_index, position);
@@ -69,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
         // REQUEST_CODE is defined above
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
-            TodoItem todoItem = (TodoItem) data.getExtras().getSerializable(EditTodoActivity.intent_todo_item);
+            Todo todo = (Todo) data.getExtras().getSerializable(EditTodoActivity.intent_todo_item);
             int itemIndex = data.getExtras().getInt(EditTodoActivity.intent_todo_item_index);
-            items.set(itemIndex, todoItem);
+            items.set(itemIndex, todo);
             itemsAdapter.notifyDataSetChanged();
-            sharedTodoSqliteManager.addOrUpdateTodo(todoItem);
+            sharedTodoSqliteManager.addOrUpdateTodo(todo);
         }
     }
 

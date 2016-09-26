@@ -17,7 +17,7 @@ public class EditTodoActivity extends AppCompatActivity {
     EditText editText;
     CheckBox checkBox;
     Button saveButton;
-    TodoItem todoItem;
+    Todo todo;
     int itemIndex;
 
     @Override
@@ -28,19 +28,19 @@ public class EditTodoActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         saveButton = (Button) findViewById(R.id.button);
 
-        todoItem = (TodoItem) getIntent().getSerializableExtra(intent_todo_item);
+        todo = (Todo) getIntent().getSerializableExtra(intent_todo_item);
         itemIndex = getIntent().getIntExtra(intent_todo_item_index, 0);
-        editText.setText(todoItem.title);
-        checkBox.setChecked(todoItem.status == TodoItem.TodoStatus.DONE);
+        editText.setText(todo.title);
+        checkBox.setChecked(todo.status == Todo.TodoStatus.DONE);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent data = new Intent();
                 // Pass relevant data back as a result
-                todoItem.title = editText.getText().toString();
-                todoItem.status = checkBox.isChecked() ? TodoItem.TodoStatus.DONE : TodoItem.TodoStatus.PENDING;
-                data.putExtra(intent_todo_item, todoItem);
+                todo.title = editText.getText().toString();
+                todo.status = checkBox.isChecked() ? Todo.TodoStatus.DONE : Todo.TodoStatus.PENDING;
+                data.putExtra(intent_todo_item, todo);
                 data.putExtra(intent_todo_item_index, itemIndex);
                 // Activity finished ok, return the data
                 setResult(RESULT_OK, data); // set result code and bundle data for response

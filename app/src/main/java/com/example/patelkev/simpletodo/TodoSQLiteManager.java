@@ -83,7 +83,7 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
     }
 
     // Insert a post into the database
-    public void addOrUpdateTodo(TodoItem todo) {
+    public void addOrUpdateTodo(Todo todo) {
         // Create and/or open the database for writing
         SQLiteDatabase db = getWritableDatabase();
 
@@ -110,8 +110,8 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<TodoItem> getAllTodos() {
-        ArrayList<TodoItem> todos = new ArrayList<>();
+    public ArrayList<Todo> getAllTodos() {
+        ArrayList<Todo> todos = new ArrayList<>();
 
         // SELECT * FROM ZFULLMESSAGE ORDER BY ZICID DESC
         String query =
@@ -128,8 +128,8 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     String title = cursor.getString(cursor.getColumnIndex(KEY_TODO_TITLE));
-                    TodoItem.TodoStatus status = TodoItem.TodoStatus.valueOf(cursor.getString(cursor.getColumnIndex(KEY_TODO_STATUS)));
-                    TodoItem todo = new TodoItem(title, status);
+                    Todo.TodoStatus status = Todo.TodoStatus.valueOf(cursor.getString(cursor.getColumnIndex(KEY_TODO_STATUS)));
+                    Todo todo = new Todo(title, status);
                     todo.id = cursor.getString(cursor.getColumnIndex(KEY_TODO_ID));
                     todos.add(todo);
                 } while(cursor.moveToNext());
@@ -145,7 +145,7 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
 
     }
 
-    public void deleteTodo(TodoItem todo) {
+    public void deleteTodo(Todo todo) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         String whereClause = String.format("WHERE %s == ?", KEY_TODO_ID);

@@ -16,12 +16,12 @@ import static android.graphics.Paint.STRIKE_THRU_TEXT_FLAG;
  * Created by patelkev on 9/25/16.
  */
 
-public class TodoItemAdapter extends ArrayAdapter<TodoItem> {
+public class TodoItemAdapter extends ArrayAdapter<Todo> {
     private static class ViewHolder {
         private TextView itemView;
     }
 
-    public TodoItemAdapter(Context context, int textViewResourceId, ArrayList<TodoItem> items) {
+    public TodoItemAdapter(Context context, int textViewResourceId, ArrayList<Todo> items) {
         super(context, textViewResourceId, items);
     }
 
@@ -40,13 +40,13 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        TodoItem item = getItem(position);
+        Todo item = getItem(position);
         if (item!= null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
             viewHolder.itemView.setText(item.title);
             int paintFlags = viewHolder.itemView.getPaintFlags() & (~ STRIKE_THRU_TEXT_FLAG);
-            if (item.status == TodoItem.TodoStatus.DONE) {
+            if (item.status == Todo.TodoStatus.DONE) {
                 paintFlags = paintFlags | Paint.STRIKE_THRU_TEXT_FLAG;
             }
             viewHolder.itemView.setPaintFlags(paintFlags);
