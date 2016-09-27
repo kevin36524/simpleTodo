@@ -3,6 +3,8 @@ package com.example.patelkev.simpletodo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -22,8 +24,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedTodoSqliteManager = TodoSQLiteManager.sharedInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        sharedTodoSqliteManager = TodoSQLiteManager.sharedInstance(getApplicationContext());
+
         lvItems = (ListView) findViewById(R.id.lvItems);
         items = sharedTodoSqliteManager.getAllTodos();
         itemsAdapter = new TodoItemAdapter(this, R.layout.todo_cell, items);
@@ -76,5 +82,11 @@ public class MainActivity extends AppCompatActivity {
             sharedTodoSqliteManager.addOrUpdateTodo(todo);
         }
     }
-
+    // Toolbar methods
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 }
