@@ -2,36 +2,49 @@ package com.example.patelkev.simpletodo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    enum FilterState {
+        FILTER_STATE_ALL, FILTER_STATE_DONE, FILTER_STATE_PENDING
+    }
+
     ArrayList<Todo> items;
     TodoItemAdapter itemsAdapter;
     ListView lvItems;
     TodoSQLiteManager sharedTodoSqliteManager;
+    Toolbar toolbar;
     private final int REQUEST_CODE = 20;
     private final int RESULT_OK = 200;
+    private TextView toolbar_title;
+    private FilterState filterState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         sharedTodoSqliteManager = TodoSQLiteManager.sharedInstance(getApplicationContext());
 
         lvItems = (ListView) findViewById(R.id.lvItems);
-        items = sharedTodoSqliteManager.getAllTodos();
+        toolbar_title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        setFilterState(FilterState.FILTER_STATE_ALL);
+        items = sharedTodoSqliteManager.getTodosForFilterState(filterState);
         itemsAdapter = new TodoItemAdapter(this, R.layout.todo_cell, items);
         lvItems.setAdapter(itemsAdapter);
         setupListViewListener();
@@ -89,4 +102,41 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    public void onFilterAction(MenuItem item) {
+       showFilterFragment();
+    }
+
+    public void setFilterState (FilterState newfilterState) {
+        String filterStateName = getResources().getText(R.string.todo_navbar_title) + "-";
+        switch (newfilterState) {
+            case FILTER_STATE_ALL:
+                filterStateName += getResources().getString(R.string.filter_all);
+                break;
+            case FILTER_STATE_DONE:
+                filterStateName += getResources().getString(R.string.filter_done);
+                break;
+            case FILTER_STATE_PENDING:
+                filterStateName += getResources().getString(R.string.filter_pending);
+                break;
+        }
+        filterState = newfilterState;
+        toolbar_title.setText(filterStateName);
+    }
+
+    private void showFilterFragment() {
+
+        FragmentManager fm = getSupportFragmentManager();
+        FilterTodoFragment filterTodoFragment = FilterTodoFragment.newInstance(filterState, new FilterTodoFragment.FilterTodoFragmentDelegate() {
+            @Override
+            public void filterFragmentDismissedWithFilterState(FilterState newfilterState) {
+                setFilterState(newfilterState);
+                items.clear();
+                items.addAll(sharedTodoSqliteManager.getTodosForFilterState(newfilterState));
+                itemsAdapter.notifyDataSetChanged();
+            }
+        });
+        filterTodoFragment.show(fm, "filter_fragment");
+    }
+
 }

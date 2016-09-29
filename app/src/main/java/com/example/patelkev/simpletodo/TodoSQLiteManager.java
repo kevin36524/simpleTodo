@@ -110,8 +110,19 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<Todo> getAllTodos() {
+    public ArrayList<Todo> getTodosForFilterState(MainActivity.FilterState filterState) {
         ArrayList<Todo> todos = new ArrayList<>();
+
+        if (filterState == null) {
+            filterState = MainActivity.FilterState.FILTER_STATE_ALL;
+        }
+
+        String whereClause = null;
+        String[] whereArgs = null;
+        if (filterState != MainActivity.FilterState.FILTER_STATE_ALL) {
+            whereClause = KEY_TODO_STATUS + "=?";
+            whereArgs = new String[]{(filterState == MainActivity.FilterState.FILTER_STATE_DONE) ? Todo.TodoStatus.DONE.name() : Todo.TodoStatus.PENDING.name()};
+        }
 
         // SELECT * FROM ZFULLMESSAGE ORDER BY ZICID DESC
         String query =
@@ -122,7 +133,8 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
         // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
         // disk space scenarios)
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        //Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_TODO, null, whereClause, whereArgs, null, null, KEY_TODO_ID);
 
         try {
             if (cursor.moveToFirst()) {

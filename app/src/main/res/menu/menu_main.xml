@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/miFilter"
-        android:title="Filter"
-        app:showAsAction="ifRoom"></item>
+        android:title="@string/menu_filter"
+        android:icon="@android:drawable/ic_menu_share"
+        android:onClick="onFilterAction"
+        app:showAsAction="always|withText"></item>
 </menu>

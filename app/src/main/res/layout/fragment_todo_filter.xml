@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/filter_chooser"
+android:layout_width="wrap_content" android:layout_height="wrap_content"
+android:layout_gravity="center" android:orientation="vertical"  >
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="vertical">
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_all"
+            android:id="@+id/radio_filter_all"
+            />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_done"
+            android:id="@+id/radio_filter_done"
+            />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_pending"
+            android:id="@+id/radio_filter_pending"
+            />
+    </RadioGroup>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_ok"
+        android:id="@+id/dismiss_button"
+        android:layout_gravity="center_horizontal"
+        />
+
+</LinearLayout>

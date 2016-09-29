@@ -19,7 +19,7 @@ The following **optional** features are implemented:
 * [x] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
 * [x] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
 * [ ] Add support for completion due dates for todo items (and display within listview item)
-* [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
+* [x] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for filtering Todods
 * [ ] Add support for selecting the priority of each todo item (and display in listview item)
 * [ ] Tweak the style improving the UI / UX, play with colors, images or backgrounds
 
@@ -27,7 +27,7 @@ The following **additional** features are implemented:
 
 * [x] Added the Mark as done support for a Todo Item.
 * [x] Persisting Enums as strings in SQLite.
-* [x] Using the [App Toolbar](https://github.com/codepath/android_guides/wiki/Using-the-App-ToolBar).
+* [x] Using the [App Toolbar](https://github.com/codepath/android_guides/wiki/Using-the-App-ToolBar) for filtering Todos.
 * [ ] Move to Recycler View.
 
 ## External Guides used
