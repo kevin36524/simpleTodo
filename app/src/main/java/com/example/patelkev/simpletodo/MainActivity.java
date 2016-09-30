@@ -4,26 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TodoItemAdapter.TodoItemInterface {
 
     enum FilterState {
         FILTER_STATE_ALL, FILTER_STATE_DONE, FILTER_STATE_PENDING
     }
 
-    ArrayList<Todo> items;
     TodoItemAdapter itemsAdapter;
-    ListView lvItems;
+    RecyclerView rvItems;
     TodoSQLiteManager sharedTodoSqliteManager;
     Toolbar toolbar;
     private final int REQUEST_CODE = 20;
@@ -41,46 +39,24 @@ public class MainActivity extends AppCompatActivity {
 
         sharedTodoSqliteManager = TodoSQLiteManager.sharedInstance(getApplicationContext());
 
-        lvItems = (ListView) findViewById(R.id.lvItems);
         toolbar_title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+
+        // TODO : Store filterState and get it from Shared Preferences
         setFilterState(FilterState.FILTER_STATE_ALL);
-        items = sharedTodoSqliteManager.getTodosForFilterState(filterState);
-        itemsAdapter = new TodoItemAdapter(this, R.layout.todo_cell, items);
-        lvItems.setAdapter(itemsAdapter);
-        setupListViewListener();
+
+        itemsAdapter = new TodoItemAdapter(this, filterState, this);
+        rvItems = (RecyclerView) findViewById(R.id.rvItems);
+        rvItems.setAdapter(itemsAdapter);
+        rvItems.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    public void onAddItem(View v) {
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
-        Todo newTodo = new Todo(itemText, Todo.TodoStatus.PENDING);
-        itemsAdapter.add(newTodo);
-        sharedTodoSqliteManager.addOrUpdateTodo(newTodo);
-        etNewItem.setText("");
-    }
-
-    private void setupListViewListener() {
-        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Todo itemToRemove = items.get(position);
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
-                sharedTodoSqliteManager.deleteTodo(itemToRemove);
-                return true;
-            }
-        });
-
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Todo currentItem = items.get(position);
-                Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
-                i.putExtra(EditTodoActivity.intent_todo_item, currentItem);
-                i.putExtra(EditTodoActivity.intent_todo_item_index, position);
-                startActivityForResult(i, REQUEST_CODE);
-            }
-        });
+    /* TodoInterface Delegate methods */
+    @Override
+    public void tappedTodo(Todo todo, int position) {
+        Intent i = new Intent(MainActivity.this, EditTodoActivity.class);
+        i.putExtra(EditTodoActivity.intent_todo_item, todo);
+        i.putExtra(EditTodoActivity.intent_todo_item_index, position);
+        startActivityForResult(i, REQUEST_CODE);
     }
 
     @Override
@@ -90,11 +66,27 @@ public class MainActivity extends AppCompatActivity {
             // Extract name value from result extras
             Todo todo = (Todo) data.getExtras().getSerializable(EditTodoActivity.intent_todo_item);
             int itemIndex = data.getExtras().getInt(EditTodoActivity.intent_todo_item_index);
-            items.set(itemIndex, todo);
-            itemsAdapter.notifyDataSetChanged();
+            itemsAdapter.modifyTodo(todo, itemIndex);
             sharedTodoSqliteManager.addOrUpdateTodo(todo);
         }
     }
+
+    @Override
+    public void deleteTodo(Todo todo) {
+        sharedTodoSqliteManager.deleteTodo(todo);
+        Log.d(this.getClass().getName(), "Delete todo request received");
+    }
+
+
+    public void onAddItem(View v) {
+        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
+        String itemText = etNewItem.getText().toString();
+        Todo newTodo = new Todo(itemText, Todo.TodoStatus.PENDING);
+        itemsAdapter.addTodo(newTodo);
+        sharedTodoSqliteManager.addOrUpdateTodo(newTodo);
+        etNewItem.setText("");
+    }
+
     // Toolbar methods
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,9 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void filterFragmentDismissedWithFilterState(FilterState newfilterState) {
                 setFilterState(newfilterState);
-                items.clear();
-                items.addAll(sharedTodoSqliteManager.getTodosForFilterState(newfilterState));
-                itemsAdapter.notifyDataSetChanged();
+                itemsAdapter.setFilterState(newfilterState);
             }
         });
         filterTodoFragment.show(fm, "filter_fragment");

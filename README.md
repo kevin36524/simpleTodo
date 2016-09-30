@@ -28,7 +28,7 @@ The following **additional** features are implemented:
 * [x] Added the Mark as done support for a Todo Item.
 * [x] Persisting Enums as strings in SQLite.
 * [x] Using the [App Toolbar](https://github.com/codepath/android_guides/wiki/Using-the-App-ToolBar) for filtering Todos.
-* [ ] Move to Recycler View.
+* [x] Move to [Recycler View](https://github.com/codepath/android_guides/wiki/Using-the-RecyclerView).
 
 ## External Guides used
 * [RayWenderlich Android ListView Tutorial](https://www.raywenderlich.com/124438/android-listview-tutorial)

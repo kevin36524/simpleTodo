@@ -1,6 +1,9 @@
 package com.example.patelkev.simpletodo;
 
+import android.content.Context;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Todo implements Serializable {
@@ -18,5 +21,8 @@ public class Todo implements Serializable {
         this.status = status;
     }
 
-
+    public static ArrayList<Todo> getTodoList(Context appContext, MainActivity.FilterState filterState) {
+        ArrayList<Todo> toods= new ArrayList<Todo>();
+        return TodoSQLiteManager.sharedInstance(appContext).getTodosForFilterState(filterState);
+    }
 }
