@@ -124,16 +124,9 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
             whereArgs = new String[]{(filterState == MainActivity.FilterState.FILTER_STATE_DONE) ? Todo.TodoStatus.DONE.name() : Todo.TodoStatus.PENDING.name()};
         }
 
-        // SELECT * FROM ZFULLMESSAGE ORDER BY ZICID DESC
-        String query =
-                String.format("SELECT * FROM %s ORDER BY %s DESC",
-                        TABLE_TODO,
-                        KEY_TODO_ID);
-
         // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
         // disk space scenarios)
         SQLiteDatabase db = getReadableDatabase();
-        //Cursor cursor = db.rawQuery(query, null);
         Cursor cursor = db.query(TABLE_TODO, null, whereClause, whereArgs, null, null, KEY_TODO_ID);
 
         try {
@@ -160,7 +153,7 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
     public void deleteTodo(Todo todo) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        String whereClause = String.format("WHERE %s == ?", KEY_TODO_ID);
+        String whereClause = KEY_TODO_ID + "=?";
         try {
             db.delete(TABLE_TODO,whereClause, new String[]{todo.id});
             db.setTransactionSuccessful();
