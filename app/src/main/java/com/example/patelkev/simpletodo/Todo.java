@@ -21,6 +21,14 @@ public class Todo implements Serializable {
         this.status = status;
     }
 
+    public void  toggleTodoStatus() {
+        this.status = this.isDone() ? TodoStatus.PENDING : TodoStatus.DONE;
+    }
+
+    public boolean isDone() {
+        return  (this.status == TodoStatus.DONE);
+    }
+
     public static ArrayList<Todo> getTodoList(Context appContext, MainActivity.FilterState filterState) {
         ArrayList<Todo> toods= new ArrayList<Todo>();
         return TodoSQLiteManager.sharedInstance(appContext).getTodosForFilterState(filterState);

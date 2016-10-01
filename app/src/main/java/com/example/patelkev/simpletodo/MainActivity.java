@@ -59,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements TodoItemAdapter.T
         startActivityForResult(i, REQUEST_CODE);
     }
 
+    public void saveModifiedItem (Todo todo) {
+        sharedTodoSqliteManager.addOrUpdateTodo(todo);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_CODE is defined above

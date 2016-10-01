@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
     public static interface TodoItemInterface {
         public void tappedTodo (Todo todo, int position);
         public void deleteTodo (Todo todo);
+        public void saveModifiedItem (Todo todo);
     }
 
     private ArrayList<Todo> mtodos;
@@ -59,6 +61,7 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView itemView;
+        private CheckBox checkBox;
         private TodoItemAdapter adapter;
 
         public ViewHolder(View view, TodoItemAdapter adapter) {
@@ -66,17 +69,25 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
 
             this.adapter = adapter;
             itemView = (TextView) view.findViewById(R.id.itemView);
+            checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+            checkBox.setOnClickListener(this);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            Todo activeTodo = adapter.mtodos.get(position);
+
             switch (v.getId()) {
                 case R.id.itemView :
-                    int position = getAdapterPosition();
-                    adapter.adapterDelegate.tappedTodo(adapter.mtodos.get(position), position);
+                    adapter.adapterDelegate.tappedTodo(activeTodo, position);
                     break;
+                case R.id.checkBox:
+                    activeTodo.toggleTodoStatus();
+                    adapter.notifyItemChanged(position);
+                    adapter.adapterDelegate.saveModifiedItem(activeTodo);
             }
         }
 
@@ -118,6 +129,7 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
             paintFlags = paintFlags | STRIKE_THRU_TEXT_FLAG;
         }
         holder.itemView.setPaintFlags(paintFlags);
+        holder.checkBox.setChecked(todo.isDone());
     }
 
     @Override
