@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 public class EditTodoActivity extends AppCompatActivity {
 
@@ -17,6 +18,9 @@ public class EditTodoActivity extends AppCompatActivity {
     EditText editText;
     CheckBox checkBox;
     Button saveButton;
+    RadioButton lowPriorityButton;
+    RadioButton mediumPriorityButton;
+    RadioButton highPriorityButton;
     Todo todo;
     int itemIndex;
 
@@ -28,10 +32,36 @@ public class EditTodoActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         saveButton = (Button) findViewById(R.id.button);
 
+        lowPriorityButton = (RadioButton) findViewById(R.id.priority_low);
+        mediumPriorityButton = (RadioButton) findViewById(R.id.priority_medium);
+        highPriorityButton = (RadioButton) findViewById(R.id.priority_high);
+
+        lowPriorityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPriority(Todo.TodoPriority.LOW);
+            }
+        });
+
+        mediumPriorityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPriority(Todo.TodoPriority.MEDIUM);
+            }
+        });
+
+        highPriorityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPriority(Todo.TodoPriority.HIGH);
+            }
+        });
+
         todo = (Todo) getIntent().getSerializableExtra(intent_todo_item);
         itemIndex = getIntent().getIntExtra(intent_todo_item_index, 0);
         editText.setText(todo.title);
         checkBox.setChecked(todo.status == Todo.TodoStatus.DONE);
+        initialSelectionForRadioItems();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,4 +79,22 @@ public class EditTodoActivity extends AppCompatActivity {
         });
     }
 
+    private void initialSelectionForRadioItems() {
+        switch (todo.priority) {
+            case HIGH:
+                highPriorityButton.setChecked(true);
+                break;
+            case MEDIUM:
+                mediumPriorityButton.setChecked(true);
+                break;
+            case LOW:
+                lowPriorityButton.setChecked(true);
+                break;
+        }
+        return;
+    }
+
+    private void setPriority(Todo.TodoPriority newPriority) {
+        todo.priority = newPriority;
+    }
 }

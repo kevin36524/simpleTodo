@@ -27,6 +27,7 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
     private static final String KEY_TODO_ID = "id";
     private static final String KEY_TODO_TITLE = "title";
     private static final String KEY_TODO_STATUS = "status";
+    private static final String KEY_TODO_PRIORITY = "priority";
 
     private static TodoSQLiteManager sInstance;
 
@@ -64,7 +65,8 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
                 "(" +
                 KEY_TODO_ID + " TEXT PRIMARY KEY," + // Define a primary key
                 KEY_TODO_TITLE + " TEXT," + // Define a foreign key
-                KEY_TODO_STATUS + " TEXT" + // Define a foreign key
+                KEY_TODO_STATUS + " TEXT," + // Define a foreign key
+                KEY_TODO_PRIORITY + " TEXT" +
                 ")";
 
         db.execSQL(CREATE_TODOS_TABLE);
@@ -97,6 +99,7 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
             values.put(KEY_TODO_ID, todo.id);
             values.put(KEY_TODO_TITLE, todo.title);
             values.put(KEY_TODO_STATUS, todo.status.name());
+            values.put(KEY_TODO_PRIORITY, todo.priority.name());
 
             int rows = db.update(TABLE_TODO, values, KEY_TODO_ID + "= ?", new String[]{todo.id});
             if (rows == 0) {
@@ -134,7 +137,10 @@ public class TodoSQLiteManager extends SQLiteOpenHelper {
                 do {
                     String title = cursor.getString(cursor.getColumnIndex(KEY_TODO_TITLE));
                     Todo.TodoStatus status = Todo.TodoStatus.valueOf(cursor.getString(cursor.getColumnIndex(KEY_TODO_STATUS)));
-                    Todo todo = new Todo(title, status);
+                    Todo.TodoPriority priority = Todo.TodoPriority.valueOf(cursor.getString(cursor.getColumnIndex(KEY_TODO_PRIORITY)));
+                    Todo todo = new Todo(title);
+                    todo.status = status;
+                    todo.priority = priority;
                     todo.id = cursor.getString(cursor.getColumnIndex(KEY_TODO_ID));
                     todos.add(todo);
                 } while(cursor.moveToNext());

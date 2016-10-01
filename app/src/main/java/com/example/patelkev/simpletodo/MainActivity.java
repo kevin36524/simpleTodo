@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TodoItemAdapter.T
     public void onAddItem(View v) {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-        Todo newTodo = new Todo(itemText, Todo.TodoStatus.PENDING);
+        Todo newTodo = new Todo(itemText);
         itemsAdapter.addTodo(newTodo);
         sharedTodoSqliteManager.addOrUpdateTodo(newTodo);
         etNewItem.setText("");

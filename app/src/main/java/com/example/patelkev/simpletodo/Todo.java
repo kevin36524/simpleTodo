@@ -10,15 +10,20 @@ public class Todo implements Serializable {
     public enum TodoStatus {
         PENDING, DONE
     }
+    public enum TodoPriority {
+        HIGH, MEDIUM, LOW
+    }
 
     public String title;
     public TodoStatus status;
     public String id;
+    public TodoPriority priority;
 
-    public Todo(String title, TodoStatus status) {
+    public Todo(String title) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
-        this.status = status;
+        this.status = TodoStatus.PENDING;
+        this.priority = TodoPriority.LOW;
     }
 
     public void  toggleTodoStatus() {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView itemView;
         private CheckBox checkBox;
+        private ImageView priorityImageView;
         private TodoItemAdapter adapter;
 
         public ViewHolder(View view, TodoItemAdapter adapter) {
@@ -70,6 +72,7 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
             this.adapter = adapter;
             itemView = (TextView) view.findViewById(R.id.itemView);
             checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+            priorityImageView = (ImageView) view.findViewById(R.id.priorityImageView);
             checkBox.setOnClickListener(this);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -130,6 +133,25 @@ public class TodoItemAdapter extends  RecyclerView.Adapter<TodoItemAdapter.ViewH
         }
         holder.itemView.setPaintFlags(paintFlags);
         holder.checkBox.setChecked(todo.isDone());
+        holder.priorityImageView.setImageResource(imageResourceForTodo(todo));
+    }
+
+    private int imageResourceForTodo(Todo todo) {
+        int retVal = R.drawable.circle_low_priority;
+
+        switch (todo.priority) {
+            case HIGH:
+                retVal = R.drawable.circle_high_priority;
+                break;
+            case MEDIUM:
+                retVal = R.drawable.circle_medium_priority;
+                break;
+            case LOW:
+                retVal = R.drawable.circle_low_priority;
+                break;
+        }
+
+        return retVal;
     }
 
     @Override

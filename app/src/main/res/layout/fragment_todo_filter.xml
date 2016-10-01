@@ -8,7 +8,7 @@ android:layout_gravity="center" android:orientation="vertical"  >
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="vertical">
+        android:orientation="vertical">
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
